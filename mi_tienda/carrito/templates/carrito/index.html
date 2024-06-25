@@ -1,0 +1,29 @@
+{% extends 'carrito/base.html' %}
+
+{% block title %}Página Principal{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mt-4">Bienvenido a Mi Tienda</h1>
+    <p>Esta es la página principal de tu tienda.</p>
+
+    <h2 class="mt-4">Productos disponibles</h2>
+    <div class="row">
+        {% for producto in productos %}
+        <div class="col-md-4">
+            <div class="card mb-4">
+                {% if producto.imagen %}
+                <img src="{{ producto.imagen.url }}" class="card-img-top img-fluid" alt="{{ producto.nombre }}">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ producto.nombre }}</h5>
+                    <p class="card-text">{{ producto.descripcion }}</p>
+                    <p class="card-text">Precio: ${{ producto.precio }}</p>
+                    <a href="{% url 'agregar_al_carrito' producto.id %}" class="btn btn-primary">Agregar al Carrito</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

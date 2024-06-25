@@ -1,0 +1,13 @@
+{% extends 'carrito/base.html' %}
+
+{% block title %}Cerrar sesión{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Cerrar sesión</h2>
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Cerrar sesión</button>
+    </form>
+</div>
+{% endblock %}

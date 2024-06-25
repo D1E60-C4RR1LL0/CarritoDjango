@@ -1,0 +1,45 @@
+
+/* Estilos para la tarjeta de producto */
+.card-img-top {
+    object-fit: cover;
+    height: 400px;  
+    width: 100%;
+}
+
+/* Estilos para las imágenes pequeñas en el carrito */
+.img-carrito {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+/* Estilos para el formulario de pago */
+.form-pago {
+    max-width: 600px;
+    margin: auto;
+}
+
+/* Estilos generales */
+.container {
+    margin-top: 20px;
+}
+
+.navbar-brand {
+    font-weight: bold;
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+/* Estilos para el botón de cerrar sesión en el nav */
+.btn-cerrar-sesion {
+    display: inline;
+    padding: 1;
+    border: none;
+    background: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+}

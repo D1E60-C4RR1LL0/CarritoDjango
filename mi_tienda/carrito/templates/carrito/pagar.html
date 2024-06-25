@@ -1,0 +1,20 @@
+{% extends 'carrito/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}Pagar{% endblock %}
+
+{% block content %}
+<div class="container form-pago">
+    <h2 class="mt-4">Datos de Pago</h2>
+    <form method="post" class="mt-4">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-primary">Pagar</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'carrito/scripts.js' %}"></script>
+{% endblock %}

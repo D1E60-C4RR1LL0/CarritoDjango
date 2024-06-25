@@ -1,0 +1,17 @@
+{% extends 'carrito/base.html' %}
+
+{% block title %}¡Gracias por tu compra!{% endblock %}
+
+{% block content %}
+<div class="container mt-4 text-center">
+    <h1>¡Gracias por tu compra!</h1>
+    <h3><br>En breve los repartidores se contactarán contigo. 
+    <br>Espera para revisando nuestro catálogo.</h3>
+</div>
+
+<script>
+    setTimeout(function() {
+        window.location.href = "{% url 'index' %}";
+    }, 5000);
+</script>
+{% endblock %}
