@@ -2,3 +2,5 @@ __pycache__,
 db.sqlite3,
 env/
 mi_tienda/db.sqlite3
+mi_tienda/carrito/__pycache__/urls.cpython-312.pyc
+mi_tienda/carrito/__pycache__/views.cpython-312.pyc
