@@ -6,6 +6,7 @@ from .models import Producto, Pedido, LineaPedido
 from django.contrib.auth.decorators import login_required
 from django.db import models
 from itertools import cycle
+from django.http import JsonResponse
 
 def obtener_conteo_carrito(request):
     if request.user.is_authenticated:
