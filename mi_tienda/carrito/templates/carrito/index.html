@@ -19,11 +19,49 @@
                     <h5 class="card-title">{{ producto.nombre }}</h5>
                     <p class="card-text">{{ producto.descripcion }}</p>
                     <p class="card-text">Precio: ${{ producto.precio }}</p>
-                    <a href="{% url 'agregar_al_carrito' producto.id %}" class="btn btn-primary">Agregar al Carrito</a>
+                    <button class="btn btn-primary agregar-carrito" data-id="{{ producto.id }}">Agregar al Carrito</button>
                 </div>
             </div>
         </div>
         {% endfor %}
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.agregar-carrito').forEach(button => {
+            button.addEventListener('click', function(event) {
+                const productoId = this.getAttribute('data-id');
+                const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                fetch(`{% url 'agregar_al_carrito_ajax' 0 %}`.replace('0', productoId), {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken,
+                    },
+                    body: JSON.stringify({})
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        console.error(data.error);
+                    } else {
+                        document.querySelector('.badge.bg-primary').textContent = data.total_items;
+                        mostrarMensaje(data.mensaje);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        });
+    });
+
+    function mostrarMensaje(mensaje) {
+        const mensajeDiv = document.getElementById('mensaje');
+        mensajeDiv.textContent = mensaje;
+        mensajeDiv.style.display = 'block';
+        setTimeout(() => {
+            mensajeDiv.style.display = 'none';
+        }, 3000);  // El mensaje desaparecerá después de 3 segundos
+    }
+</script>
 {% endblock %}
