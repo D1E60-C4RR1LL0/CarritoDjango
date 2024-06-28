@@ -110,3 +110,20 @@ def pagar(request):
 @login_required
 def agradecimiento(request):
     return render(request, 'carrito/agradecimiento.html')
+
+from django.http import JsonResponse
+
+@login_required
+def agregar_al_carrito_ajax(request, producto_id):
+    if request.method == "POST":
+        producto = Producto.objects.get(id=producto_id)
+        pedido, creado = Pedido.objects.get_or_create(usuario=request.user, finalizado=False)
+        linea_pedido, creado = LineaPedido.objects.get_or_create(pedido=pedido, producto=producto)
+        if not creado:
+            linea_pedido.cantidad += 1
+        else:
+            linea_pedido.cantidad = 1
+        linea_pedido.save()
+        total_items = pedido.lineas.aggregate(total=models.Sum('cantidad'))['total']
+        return JsonResponse({'total_items': total_items, 'mensaje': 'Producto agregado al carrito'})
+    return JsonResponse({'error': 'Método no permitido'}, status=405)
