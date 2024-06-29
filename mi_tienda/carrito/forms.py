@@ -3,14 +3,25 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 import re
 from itertools import cycle  
+from .models import UserProfile
 
 
 class RegistroUsuarioForm(UserCreationForm):
     email = forms.EmailField(required=True)
+    user_type = forms.ChoiceField(choices=UserProfile.USER_TYPE_CHOICES, required=True)
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password1', 'password2']
+        fields = ['username', 'email', 'password1', 'password2', 'user_type']
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.email = self.cleaned_data['email']
+        if commit:
+            user.save()
+            # Crear el perfil del usuario si no existe
+            UserProfile.objects.get_or_create(user=user, defaults={'user_type': self.cleaned_data['user_type']})
+        return user
 
 class PagoForm(forms.Form):
     nombre = forms.CharField(max_length=100, required=True)
@@ -72,3 +83,4 @@ class PagoForm(forms.Form):
         if res == 10:
             res = 'K'
         return str(res) == verificador
+    

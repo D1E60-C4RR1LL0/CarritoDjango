@@ -22,7 +22,15 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'index' %}">Inicio</a>
+                    </li>
                     {% if user.is_authenticated %}
+                        {% if user.userprofile.user_type == 'admin' %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
+                        </li>
+                        {% endif %}
                         <li class="nav-item">
                             <a class="nav-link" href="#">
                                 ¡Hola {{ user.first_name }}!
@@ -31,7 +39,7 @@
                         <li class="nav-item">
                             <form method="post" action="{% url 'logout' %}" class="d-inline">
                                 {% csrf_token %}
-                                <button type="submit" class="btn btn-link nav-link btn-cerrar-sesion">
+                                <button type="submit" class="btn btn-link nav-link btn-exit">
                                     <span class="fas fa-sign-out-alt"></span> Cerrar sesión
                                 </button>
                             </form>

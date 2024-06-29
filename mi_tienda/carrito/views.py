@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import RegistroUsuarioForm, PagoForm
-from .models import Producto, Pedido, LineaPedido
+from .models import Producto, Pedido, LineaPedido, UserProfile
 from django.contrib.auth.decorators import login_required
 from django.db import models
 from itertools import cycle
@@ -128,3 +128,9 @@ def agregar_al_carrito_ajax(request, producto_id):
         total_items = pedido.lineas.aggregate(total=models.Sum('cantidad'))['total']
         return JsonResponse({'total_items': total_items, 'mensaje': 'Producto agregado al carrito'})
     return JsonResponse({'error': 'Método no permitido'}, status=405)
+
+@login_required
+def dashboard(request):
+    if not request.user.userprofile.user_type == 'admin':
+        return redirect('index')
+    return render(request, 'carrito/dashboard.html')
