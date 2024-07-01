@@ -7,31 +7,22 @@ from .models import UserProfile, Producto
 
 
 class RegistroUsuarioForm(UserCreationForm):
-    email = forms.EmailField(required=True)
     first_name = forms.CharField(max_length=30, required=True)
     last_name = forms.CharField(max_length=30, required=True)
-    USER_TYPES = (
-        ('admin', 'Administrador'),
-        ('customer', 'Cliente'),
-    )
-    user_type = forms.ChoiceField(choices=USER_TYPES, required=True)
+    email = forms.EmailField(max_length=254, required=True)
+    user_type = forms.ChoiceField(choices=[('admin', 'Administrador'), ('customer', 'Cliente')], required=True)
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'first_name', 'last_name', 'password1', 'password2', 'user_type']
+        fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2', 'user_type')
 
     def save(self, commit=True):
-        user = super(RegistroUsuarioForm, self).save(commit=False)
+        user = super().save(commit=False)
         user.email = self.cleaned_data['email']
-        user.first_name = self.cleaned_data['first_name']
-        user.last_name = self.cleaned_data['last_name']
-        if self.cleaned_data['user_type'] == 'admin':
-            user.is_staff = True  
         if commit:
             user.save()
-            profile, created = UserProfile.objects.get_or_create(user=user)
-            profile.user_type = self.cleaned_data['user_type']
-            profile.save()
+            if not UserProfile.objects.filter(user=user).exists():
+                UserProfile.objects.create(user=user, user_type=self.cleaned_data['user_type'])
         return user
 
 class PagoForm(forms.Form):
@@ -99,3 +90,17 @@ class ProductoForm(forms.ModelForm):
     class Meta:
         model = Producto
         fields = ['nombre', 'precio', 'descripcion', 'imagen']
+        
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['user_type']
+
+class CustomUserCreationForm(UserCreationForm):
+    first_name = forms.CharField(max_length=30, required=True, help_text='Required.')
+    last_name = forms.CharField(max_length=30, required=True, help_text='Required.')
+    email = forms.EmailField(max_length=254, help_text='Required. Inform a valid email address.')
+
+    class Meta:
+        model = User
+        fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2')

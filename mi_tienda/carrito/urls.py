@@ -18,4 +18,8 @@ urlpatterns = [
     path('productos/editar/<int:producto_id>/', views.editar_producto, name='editar_producto'),
     path('productos/eliminar/<int:producto_id>/', views.eliminar_producto, name='eliminar_producto'),
     path('agregar_ajax/<int:producto_id>/', views.agregar_al_carrito_ajax, name='agregar_al_carrito_ajax'),
+    path('usuarios/', views.lista_usuarios, name='lista_usuarios'),
+    path('usuarios/crear/', views.crear_usuario, name='crear_usuario'),
+    path('usuarios/editar/<int:usuario_id>/', views.editar_usuario, name='editar_usuario'),
+    path('usuarios/eliminar/<int:usuario_id>/', views.eliminar_usuario, name='eliminar_usuario'),
 ]

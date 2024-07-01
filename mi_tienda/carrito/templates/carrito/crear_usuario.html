@@ -1,0 +1,15 @@
+{% extends 'carrito/base.html' %}
+
+{% block title %}Crear Usuario{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mt-4">Crear Usuario</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        {{ profile_form.as_p }}
+        <button type="submit" class="btn btn-primary">Crear Usuario</button>
+    </form>
+</div>
+{% endblock %}

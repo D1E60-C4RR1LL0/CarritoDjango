@@ -1,9 +1,10 @@
 # carrito/views.py
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
-from django.contrib.auth.forms import AuthenticationForm
-from .forms import RegistroUsuarioForm, PagoForm, ProductoForm
-from .models import Producto, Pedido, LineaPedido
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from .forms import RegistroUsuarioForm, PagoForm, ProductoForm, UserProfileForm, CustomUserCreationForm
+from .models import Producto, Pedido, LineaPedido, UserProfile
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db import models
 from django.http import JsonResponse
@@ -190,3 +191,62 @@ def agregar_al_carrito_ajax(request, producto_id):
         total_items = pedido.lineas.aggregate(total=models.Sum('cantidad'))['total']
         return JsonResponse({'total_items': total_items, 'mensaje': 'Producto agregado al carrito correctamente.'})
     return JsonResponse({'error': 'Método no permitido'}, status=405)
+
+@login_required
+def lista_usuarios(request):
+    if not request.user.is_staff:
+        return redirect('index')
+    
+    usuarios = User.objects.all()
+    return render(request, 'carrito/lista_usuarios.html', {'usuarios': usuarios})
+
+@login_required
+def crear_usuario(request):
+    if not request.user.is_staff:
+        return redirect('index')
+
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        profile_form = UserProfileForm(request.POST)
+        if form.is_valid() and profile_form.is_valid():
+            user = form.save()
+            if not UserProfile.objects.filter(user=user).exists():
+                profile = profile_form.save(commit=False)
+                profile.user = user
+                profile.save()
+            return redirect('lista_usuarios')
+    else:
+        form = CustomUserCreationForm()
+        profile_form = UserProfileForm()
+    
+    return render(request, 'carrito/crear_usuario.html', {'form': form, 'profile_form': profile_form})
+
+@login_required
+def editar_usuario(request, usuario_id):
+    if not request.user.is_staff:
+        return redirect('index')
+
+    user = get_object_or_404(User, id=usuario_id)
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST, instance=user)
+        profile_form = UserProfileForm(request.POST, instance=user.userprofile)
+        if form.is_valid() and profile_form.is_valid():
+            form.save()
+            profile_form.save()
+            return redirect('lista_usuarios')
+    else:
+        form = CustomUserCreationForm(instance=user)
+        profile_form = UserProfileForm(instance=user.userprofile)
+    
+    return render(request, 'carrito/editar_usuario.html', {'form': form, 'profile_form': profile_form, 'user': user})
+
+@login_required
+def eliminar_usuario(request, usuario_id):
+    if not request.user.is_staff:
+        return redirect('index')
+
+    user = get_object_or_404(User, id=usuario_id)
+    if request.method == 'POST':
+        user.delete()
+        return redirect('lista_usuarios')
+    return render(request, 'carrito/eliminar_usuario.html', {'user': user})
