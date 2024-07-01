@@ -1,0 +1,39 @@
+{% extends 'carrito/base.html' %}
+
+{% block title %}Lista de Productos{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Lista de Productos</h2>
+    <a href="{% url 'crear_producto' %}" class="btn btn-primary mb-3">Crear Producto</a>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Precio</th>
+                <th>Descripción</th>
+                <th>Imagen</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for producto in productos %}
+            <tr>
+                <td>{{ producto.nombre }}</td>
+                <td>${{ producto.precio }}</td>
+                <td>{{ producto.descripcion }}</td>
+                <td>
+                    {% if producto.imagen %}
+                    <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="img-thumbnail" style="width: 50px;">
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'editar_producto' producto.id %}" class="btn btn-warning btn-sm">Editar</a>
+                    <a href="{% url 'eliminar_producto' producto.id %}" class="btn btn-danger btn-sm">Eliminar</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -26,7 +26,7 @@
             <div class="mt-4 text-center">
                 <h5>Total de artículos: {{ total_articulos }}</h5>
                 <h5>Total a pagar: ${{ total_precio|floatformat:2 }}</h5>
-                <a href="{% url 'pagar' %}" class="btn btn-success mt-3 btn-lg">Pagar</a>
+                <a href="{% url 'pagar' %}" class="btn btn-success mt-3 btn-lg {% if total_articulos == 0 %}disabled{% endif %}">Pagar</a>
             </div>
         </div>
     </div>
